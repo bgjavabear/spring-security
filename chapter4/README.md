@@ -73,6 +73,32 @@ When the request arrives here, the only processing is to wrap the invocation to 
 ![filter-security-interceptor](filter-security-interceptor.png)
 ![filter-security-interceptor-1](filter-security-interceptor-1.png)
 
+### Decision manager
+
+#### AffirmativeBased
+
+This access decision manager calls all its configured voters, and if any of them votes
+that access should be granted, it is enough for the access decision manager to allow 
+access to the secured resource. 
+
+#### ConsensusBased
+
+This access decision manager implementation calls all its configured voters to make a
+decision to either grant or deny access to a resource. The difference with the
+AffirmativeBased decision manager is that the ConsensusBased decision manager decides 
+to grant access only if there are more voters granting access than voters denying it. 
+
+#### UnanimousBased
+
+As you probably guessed, this access decision manager will grant access to the resource 
+only if all the configured voters vote in favor of allowing access to the resource.
+
+### AccessDecisionVoter
+
+#### Role voter
+
+![access-decision-voter](access-decision-voter.png)
+
 ### The Special URLs
 
 • /j_spring_security_check   
@@ -105,3 +131,9 @@ Digest Authentication works with HTTP headers the same way that Basic Authentica
 Digest Authentication is based in the use of a nonce for hashing the passwords. A nonce is an arbitrary server-generated number that is used in the authentication process and that is used only once. 
 
 #### RememberMe Authentication
+
+Creates a cookie and validates against it.
+
+### Logging Out
+
+/j_spring_security_logout

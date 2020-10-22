@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+    <security:http auto-config="true" access-decision-manager-ref="accessDecisionManager">
+        <security:intercept-url pattern="/admin/*" access="ROLE_ADMIN"/>
+
+
+        <security:remember-me key="terror-key"/>
+
+        <security:logout delete-cookies="JSESSIONID" success-handler-ref="logoutRedirectToAny"/>
+
+        <security:form-login login-page="/custom_login"
+                             authentication-failure-handler-ref="serverErrorHandler"/>
+    </security:http>
+    <bean id="accessDecisionManager" class="org.springframework.security.access.vote.UnanimousBased">
+        <constructor-arg>
+            <list>
+                <bean class="org.springframework.security.access.vote.RoleVoter"/>
+                <bean class="org.springframework.security.access.vote.AuthenticatedVoter"/>
+            </list>
+        </constructor-arg>
+    </bean>
+    <security:authentication-manager>
+        <security:authentication-provider user-service-ref="inMemoryUserServiceWithCustomUser"/>
+    </security:authentication-manager>
+
+    <bean id="inMemoryUserServiceWithCustomUser"
+          class="terrormovies.spring.CustomInMemoryUserDetailsManager">
+        <constructor-arg>
+            <list>
+                <bean class="terrormovies.model.User">
+                    <constructor-arg value="admin"/>
+                    <constructor-arg value="admin"/>
+                    <constructor-arg>
+                        <list>
+                            <bean class="org.springframework.security.core.authority.SimpleGrantedAuthority">
+                                <constructor-arg value="ROLE_ADMIN"/>
+                            </bean>
+                        </list>
+                    </constructor-arg>
+                    <constructor-arg value="Scarioni"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+    <bean id="logoutRedirectToAny"
+          class="org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler">
+        <property name="targetUrlParameter" value="redirectTo"/>
+    </bean>
+    <bean id="serverErrorHandler" class="terrormovies.security.ServerErrorFailureHandler"/>
+</beans>
