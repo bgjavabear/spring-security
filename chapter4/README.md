@@ -137,3 +137,21 @@ Creates a cookie and validates against it.
 ### Logging Out
 
 /j_spring_security_logout
+
+### Switching user
+
+j_spring_security_switch_user?j_username=paco
+j_spring_security_exit_user
+
+### Managing session
+
+One very important thing to do regarding sessions is to make sure you create a new session ID when a user authenticates successfully. 
+
+Spring Security also offers a feature you can use to specify the number of
+concurrent sessions that the same user can have open at any given time.
+
+These two features come in the form of the two classes SessionFixationProtectionStrategy
+and ConcurrentSessionControlStrategy (with the second one being a subclass of the first).
+Both classes implement SessionAuthenticationStrategy. These strategies are invoked from 
+AbstractAuthenticationProcessingFilter and the SessionManagementFilter. 
+Let’s see how they work.
